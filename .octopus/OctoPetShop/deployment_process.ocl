@@ -302,6 +302,15 @@ step "deploy-web-app-containers" {
     }
 }
 
+action {
+        properties = {
+            Octopus.Action.Template.Id = "ActionTemplates-1602"
+            Octopus.Action.Template.Version = "3"
+        }
+        worker_pool = "azure-worker-pool"
+    }
+}
+
 step "send-completion-notification" {
     condition = "Variable"
     name = "Send Completion Notification"
