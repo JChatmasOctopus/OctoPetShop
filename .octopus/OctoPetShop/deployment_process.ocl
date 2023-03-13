@@ -302,8 +302,6 @@ step "deploy-web-app-containers" {
     }
 }
 
-#test
-
 step "send-completion-notification" {
     condition = "Variable"
     name = "Send Completion Notification"
