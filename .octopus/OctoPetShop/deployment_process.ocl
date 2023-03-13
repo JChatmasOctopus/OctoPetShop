@@ -302,12 +302,14 @@ step "deploy-web-app-containers" {
     }
 }
 
+/*
 ###############
 
 #Smoke test step here
 #Adding via Configuration as Code
 
 ################
+*/
 
 step "send-completion-notification" {
     condition = "Variable"
