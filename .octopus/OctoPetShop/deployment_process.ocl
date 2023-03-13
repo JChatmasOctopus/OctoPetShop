@@ -303,12 +303,7 @@ step "deploy-web-app-containers" {
 }
 
 /*
-###############
-
-#Smoke test step here
-#Adding via Configuration as Code
-
-################
+test
 */
 
 step "send-completion-notification" {
