@@ -302,6 +302,12 @@ step "deploy-web-app-containers" {
     }
 }
 
+##############
+# Add smoke test step here
+
+
+##############
+
 step "send-completion-notification" {
     condition = "Variable"
     name = "Send Completion Notification"
