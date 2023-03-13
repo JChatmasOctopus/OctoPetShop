@@ -302,19 +302,6 @@ step "deploy-web-app-containers" {
     }
 }
 
-step "smoke-test-product-api-endpoint" {
-    name = "Smoke test API endpoints"
-
-    action {
-        properties = {
-            Octopus.Action.Template.Id = "ActionTemplates-1602"
-            Octopus.Action.Template.Version = "6"
-            smoketest.baseURI = ""
-        }
-        worker_pool = "azure-worker-pool"
-    }
-}
-
 step "send-completion-notification" {
     condition = "Variable"
     name = "Send Completion Notification"
@@ -331,6 +318,7 @@ step "send-completion-notification" {
             Octopus.Action.Email.IsHtml = "True"
             Octopus.Action.Email.Subject = "Release #{Octopus.Release.Number} has been deployed to #{Octopus.Environment.Name}"
             Octopus.Action.Email.To = "#{Octopus.Deployment.CreatedBy.EmailAddress}"
+            Octopus.Action.RunOnServer = "false"
         }
     }
 }
