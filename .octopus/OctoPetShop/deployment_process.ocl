@@ -16,6 +16,8 @@ step "notify-deployment-starting" {
     }
 }
 
+# Comment here
+
 step "deploy-sqlserver-container" {
     name = "Deploy SqlServer container"
     properties = {
