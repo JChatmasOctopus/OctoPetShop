@@ -8,15 +8,13 @@ step "notify-deployment-starting" {
             Octopus.Action.Template.Version = "4"
         }
         worker_pool = "k8s-worker"
-
+        # This comment works
         container {
             feed = "docker-hub"
             image = "octopusdeploy/worker-tools:ubuntu.18.04"
         }
     }
 }
-
-# Comment here
 
 step "deploy-sqlserver-container" {
     name = "Deploy SqlServer container"
