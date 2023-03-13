@@ -1,0 +1,369 @@
+step "notify-deployment-starting" {
+    name = "Notify Production Deployment Starting"
+
+    action {
+        environments = ["production"]
+        properties = {
+            Octopus.Action.Template.Id = "ActionTemplates-1021"
+            Octopus.Action.Template.Version = "4"
+        }
+        worker_pool = "k8s-worker"
+
+        container {
+            feed = "docker-hub"
+            image = "octopusdeploy/worker-tools:ubuntu.18.04"
+        }
+    }
+}
+
+step "deploy-sqlserver-container" {
+    name = "Deploy SqlServer container"
+    properties = {
+        Octopus.Action.TargetRoles = "Enterprise-Demo"
+    }
+
+    action {
+        action_type = "Octopus.KubernetesDeployContainers"
+        properties = {
+            Octopus.Action.EnabledFeatures = ",Octopus.Features.KubernetesService,Octopus.Features.KubernetesIngress,Octopus.Features.KubernetesConfigMap,Octopus.Features.KubernetesSecret"
+            Octopus.Action.KubernetesContainers.Containers = "[{\"Name\":\"sqlserver\",\"Ports\":[{\"key\":\"sql\",\"keyError\":null,\"value\":\"1433\",\"valueError\":null,\"option\":\"TCP\",\"optionError\":null,\"option2\":\"\",\"option2Error\":null}],\"EnvironmentVariables\":[{\"key\":\"ACCEPT_EULA\",\"keyError\":null,\"value\":\"Y\",\"valueError\":null,\"option\":\"\",\"optionError\":null,\"option2\":\"\",\"option2Error\":null},{\"key\":\"SA_PASSWORD\",\"keyError\":null,\"value\":\"#{OctoPetShop.Database.Password}\",\"valueError\":null,\"option\":\"\",\"optionError\":null,\"option2\":\"\",\"option2Error\":null}],\"SecretEnvironmentVariables\":[],\"ConfigMapEnvironmentVariables\":[],\"FieldRefEnvironmentVariables\":[],\"ConfigMapEnvFromSource\":[],\"SecretEnvFromSource\":[],\"VolumeMounts\":[],\"Resources\":{\"requests\":{\"memory\":\"\",\"cpu\":\"\",\"ephemeralStorage\":\"\",\"amdGpu\":\"\",\"nvidiaGpu\":\"\",\"storage\":\"\"},\"limits\":{\"memory\":\"\",\"cpu\":\"\",\"ephemeralStorage\":\"\",\"amdGpu\":\"\",\"nvidiaGpu\":\"\",\"storage\":\"\"}},\"LivenessProbe\":{\"failureThreshold\":\"\",\"initialDelaySeconds\":\"\",\"periodSeconds\":\"\",\"successThreshold\":\"\",\"timeoutSeconds\":\"\",\"type\":\"\",\"exec\":{\"command\":[]},\"httpGet\":{\"host\":\"\",\"path\":\"\",\"port\":\"\",\"scheme\":\"\",\"httpHeaders\":[]},\"tcpSocket\":{\"host\":\"\",\"port\":\"\"}},\"ReadinessProbe\":{\"failureThreshold\":\"\",\"initialDelaySeconds\":\"\",\"periodSeconds\":\"\",\"successThreshold\":\"\",\"timeoutSeconds\":\"\",\"type\":\"\",\"exec\":{\"command\":[]},\"httpGet\":{\"host\":\"\",\"path\":\"\",\"port\":\"\",\"scheme\":\"\",\"httpHeaders\":[]},\"tcpSocket\":{\"host\":\"\",\"port\":\"\"}},\"StartupProbe\":{\"failureThreshold\":\"\",\"initialDelaySeconds\":\"\",\"periodSeconds\":\"\",\"successThreshold\":\"\",\"timeoutSeconds\":\"\",\"type\":\"\",\"exec\":{\"command\":[]},\"httpGet\":{\"host\":\"\",\"path\":\"\",\"port\":\"\",\"scheme\":\"\",\"httpHeaders\":[]},\"tcpSocket\":{\"host\":\"\",\"port\":\"\"}},\"Command\":[],\"Args\":[],\"SecurityContext\":{\"allowPrivilegeEscalation\":\"\",\"privileged\":\"\",\"readOnlyRootFilesystem\":\"\",\"runAsGroup\":\"\",\"runAsNonRoot\":\"\",\"runAsUser\":\"\",\"capabilities\":{\"add\":[],\"drop\":[]},\"seLinuxOptions\":{\"level\":\"\",\"role\":\"\",\"type\":\"\",\"user\":\"\"}},\"TerminationMessagePath\":\"\",\"TerminationMessagePolicy\":\"\",\"Lifecycle\":{\"PreStop\":null,\"PostStart\":null},\"CreateFeedSecrets\":\"True\"}]"
+            Octopus.Action.KubernetesContainers.DeploymentLabels = "{\"component\":\"database\"}"
+            Octopus.Action.KubernetesContainers.DeploymentName = "#{OctoPetShop.Database.ServiceName}"
+            Octopus.Action.KubernetesContainers.DeploymentResourceType = "Deployment"
+            Octopus.Action.KubernetesContainers.DeploymentStyle = "RollingUpdate"
+            Octopus.Action.KubernetesContainers.DeploymentWait = "Wait"
+            Octopus.Action.KubernetesContainers.IngressAnnotations = "[]"
+            Octopus.Action.KubernetesContainers.Namespace = "#{OctoPetShop.Cluster.Namespace}"
+            Octopus.Action.KubernetesContainers.PodManagementPolicy = "OrderedReady"
+            Octopus.Action.KubernetesContainers.Replicas = "1"
+            Octopus.Action.KubernetesContainers.ServiceName = "#{OctoPetShop.Database.ServiceName}"
+            Octopus.Action.KubernetesContainers.ServiceNameType = "External"
+            Octopus.Action.KubernetesContainers.ServicePorts = "[{\"name\":\"sql\",\"port\":\"1433\",\"targetPort\":\"1433\",\"nodePort\":\"\",\"protocol\":\"TCP\"}]"
+            Octopus.Action.KubernetesContainers.ServiceType = "ClusterIP"
+            OctopusUseBundledTooling = "False"
+        }
+        worker_pool = "k8s-worker"
+
+        container {
+            feed = "docker-hub"
+            image = "octopusdeploy/worker-tools:ubuntu.18.04"
+        }
+
+        packages "sqlserver" {
+            acquisition_location = "NotAcquired"
+            feed = "microsoft-container-registry"
+            package_id = "mssql/server"
+            properties = {
+                Extract = "False"
+                PackageParameterName = ""
+                SelectionMode = "immediate"
+            }
+        }
+    }
+}
+
+step "deploy-product-api-container" {
+    name = "Deploy Product API container"
+    properties = {
+        Octopus.Action.TargetRoles = "Enterprise-Demo"
+    }
+
+    action {
+        action_type = "Octopus.KubernetesDeployContainers"
+        properties = {
+            Octopus.Action.EnabledFeatures = ",Octopus.Features.KubernetesService,Octopus.Features.KubernetesIngress,Octopus.Features.KubernetesConfigMap,Octopus.Features.KubernetesSecret"
+            Octopus.Action.KubernetesContainers.Containers = "[{\"Name\":\"product-api\",\"Ports\":[],\"EnvironmentVariables\":[],\"SecretEnvironmentVariables\":[{\"key\":\"OPSConnectionString\",\"keyError\":null,\"value\":\"#{OctoPetShop.K8s.SecretName}\",\"valueError\":null,\"option\":\"ops-connectionstring\",\"optionError\":null,\"option2\":\"\",\"option2Error\":null}],\"ConfigMapEnvironmentVariables\":[],\"FieldRefEnvironmentVariables\":[],\"ConfigMapEnvFromSource\":[],\"SecretEnvFromSource\":[],\"VolumeMounts\":[],\"Resources\":{\"requests\":{\"memory\":\"\",\"cpu\":\"\",\"ephemeralStorage\":\"\",\"amdGpu\":\"\",\"nvidiaGpu\":\"\",\"storage\":\"\"},\"limits\":{\"memory\":\"\",\"cpu\":\"\",\"ephemeralStorage\":\"\",\"amdGpu\":\"\",\"nvidiaGpu\":\"\",\"storage\":\"\"}},\"LivenessProbe\":{\"failureThreshold\":\"\",\"initialDelaySeconds\":\"\",\"periodSeconds\":\"\",\"successThreshold\":\"\",\"timeoutSeconds\":\"\",\"type\":\"\",\"exec\":{\"command\":[]},\"httpGet\":{\"host\":\"\",\"path\":\"\",\"port\":\"\",\"scheme\":\"\",\"httpHeaders\":[]},\"tcpSocket\":{\"host\":\"\",\"port\":\"\"}},\"ReadinessProbe\":{\"failureThreshold\":\"\",\"initialDelaySeconds\":\"\",\"periodSeconds\":\"\",\"successThreshold\":\"\",\"timeoutSeconds\":\"\",\"type\":\"\",\"exec\":{\"command\":[]},\"httpGet\":{\"host\":\"\",\"path\":\"\",\"port\":\"\",\"scheme\":\"\",\"httpHeaders\":[]},\"tcpSocket\":{\"host\":\"\",\"port\":\"\"}},\"StartupProbe\":{\"failureThreshold\":\"\",\"initialDelaySeconds\":\"\",\"periodSeconds\":\"\",\"successThreshold\":\"\",\"timeoutSeconds\":\"\",\"type\":\"\",\"exec\":{\"command\":[]},\"httpGet\":{\"host\":\"\",\"path\":\"\",\"port\":\"\",\"scheme\":\"\",\"httpHeaders\":[]},\"tcpSocket\":{\"host\":\"\",\"port\":\"\"}},\"Command\":[],\"Args\":[],\"SecurityContext\":{\"allowPrivilegeEscalation\":\"\",\"privileged\":\"\",\"readOnlyRootFilesystem\":\"\",\"runAsGroup\":\"\",\"runAsNonRoot\":\"\",\"runAsUser\":\"\",\"capabilities\":{\"add\":[],\"drop\":[]},\"seLinuxOptions\":{\"level\":\"\",\"role\":\"\",\"type\":\"\",\"user\":\"\"}},\"TerminationMessagePath\":\"\",\"TerminationMessagePolicy\":\"\",\"Lifecycle\":{\"PreStop\":null,\"PostStart\":null},\"CreateFeedSecrets\":\"True\"}]"
+            Octopus.Action.KubernetesContainers.DeploymentLabels = "{\"component\":\"product\"}"
+            Octopus.Action.KubernetesContainers.DeploymentName = "#{OctoPetShop.ProductApi.ServiceName}"
+            Octopus.Action.KubernetesContainers.DeploymentResourceType = "Deployment"
+            Octopus.Action.KubernetesContainers.DeploymentStyle = "RollingUpdate"
+            Octopus.Action.KubernetesContainers.DeploymentWait = "Wait"
+            Octopus.Action.KubernetesContainers.IngressAnnotations = "[]"
+            Octopus.Action.KubernetesContainers.Namespace = "#{OctoPetShop.Cluster.Namespace}"
+            Octopus.Action.KubernetesContainers.PodManagementPolicy = "OrderedReady"
+            Octopus.Action.KubernetesContainers.Replicas = "1"
+            Octopus.Action.KubernetesContainers.SecretName = "octopetshop-product-secrets"
+            Octopus.Action.KubernetesContainers.SecretValues = "{\"ops-connectionstring\":\"#{OctoPetShop.Database.ConnectionString}\"}"
+            Octopus.Action.KubernetesContainers.ServiceName = "#{OctoPetShop.ProductApi.ServiceName}"
+            Octopus.Action.KubernetesContainers.ServiceNameType = "External"
+            Octopus.Action.KubernetesContainers.ServicePorts = "[{\"name\":\"http\",\"port\":\"#{OctoPetShop.ProductApi.HttpPort}\",\"targetPort\":\"#{OctoPetShop.ProductApi.HttpPort}\",\"nodePort\":\"\",\"protocol\":\"TCP\"},{\"name\":\"https\",\"port\":\"#{OctoPetShop.ProductApi.HttpsPort}\",\"targetPort\":\"#{OctoPetShop.ProductApi.HttpsPort}\",\"nodePort\":\"\",\"protocol\":\"TCP\"}]"
+            Octopus.Action.KubernetesContainers.ServiceType = "ClusterIP"
+            OctopusUseBundledTooling = "False"
+        }
+        worker_pool = "k8s-worker"
+
+        container {
+            feed = "docker-hub"
+            image = "octopusdeploy/worker-tools:ubuntu.18.04"
+        }
+
+        packages "product-api" {
+            acquisition_location = "NotAcquired"
+            feed = "docker-hub"
+            package_id = "octopussamples/octopetshop-productservice-enterprise"
+            properties = {
+                Extract = "False"
+                PackageParameterName = ""
+                SelectionMode = "immediate"
+            }
+        }
+    }
+}
+
+step "deploy-shopping-cart-containers" {
+    name = "Deploy Shopping Cart containers"
+    properties = {
+        Octopus.Action.TargetRoles = "Enterprise-Demo"
+    }
+
+    action {
+        action_type = "Octopus.KubernetesDeployContainers"
+        properties = {
+            Octopus.Action.EnabledFeatures = ",Octopus.Features.KubernetesService,Octopus.Features.KubernetesIngress,Octopus.Features.KubernetesConfigMap,Octopus.Features.KubernetesSecret"
+            Octopus.Action.KubernetesContainers.Containers = "[{\"Name\":\"shoppingcart-api\",\"Ports\":[],\"EnvironmentVariables\":[],\"SecretEnvironmentVariables\":[{\"key\":\"OPSConnecectionString\",\"keyError\":null,\"value\":\"#{OctoPetShop.K8s.SecretName}\",\"valueError\":null,\"option\":\"ops-connectionstring\",\"optionError\":null,\"option2\":\"\",\"option2Error\":null}],\"ConfigMapEnvironmentVariables\":[],\"FieldRefEnvironmentVariables\":[],\"ConfigMapEnvFromSource\":[],\"SecretEnvFromSource\":[],\"VolumeMounts\":[],\"Resources\":{\"requests\":{\"memory\":\"\",\"cpu\":\"\",\"ephemeralStorage\":\"\",\"amdGpu\":\"\",\"nvidiaGpu\":\"\",\"storage\":\"\"},\"limits\":{\"memory\":\"\",\"cpu\":\"\",\"ephemeralStorage\":\"\",\"amdGpu\":\"\",\"nvidiaGpu\":\"\",\"storage\":\"\"}},\"LivenessProbe\":{\"failureThreshold\":\"\",\"initialDelaySeconds\":\"\",\"periodSeconds\":\"\",\"successThreshold\":\"\",\"timeoutSeconds\":\"\",\"type\":\"\",\"exec\":{\"command\":[]},\"httpGet\":{\"host\":\"\",\"path\":\"\",\"port\":\"\",\"scheme\":\"\",\"httpHeaders\":[]},\"tcpSocket\":{\"host\":\"\",\"port\":\"\"}},\"ReadinessProbe\":{\"failureThreshold\":\"\",\"initialDelaySeconds\":\"\",\"periodSeconds\":\"\",\"successThreshold\":\"\",\"timeoutSeconds\":\"\",\"type\":\"\",\"exec\":{\"command\":[]},\"httpGet\":{\"host\":\"\",\"path\":\"\",\"port\":\"\",\"scheme\":\"\",\"httpHeaders\":[]},\"tcpSocket\":{\"host\":\"\",\"port\":\"\"}},\"StartupProbe\":{\"failureThreshold\":\"\",\"initialDelaySeconds\":\"\",\"periodSeconds\":\"\",\"successThreshold\":\"\",\"timeoutSeconds\":\"\",\"type\":\"\",\"exec\":{\"command\":[]},\"httpGet\":{\"host\":\"\",\"path\":\"\",\"port\":\"\",\"scheme\":\"\",\"httpHeaders\":[]},\"tcpSocket\":{\"host\":\"\",\"port\":\"\"}},\"Command\":[],\"Args\":[],\"SecurityContext\":{\"allowPrivilegeEscalation\":\"\",\"privileged\":\"\",\"readOnlyRootFilesystem\":\"\",\"runAsGroup\":\"\",\"runAsNonRoot\":\"\",\"runAsUser\":\"\",\"capabilities\":{\"add\":[],\"drop\":[]},\"seLinuxOptions\":{\"level\":\"\",\"role\":\"\",\"type\":\"\",\"user\":\"\"}},\"TerminationMessagePath\":\"\",\"TerminationMessagePolicy\":\"\",\"Lifecycle\":{\"PreStop\":null,\"PostStart\":null},\"CreateFeedSecrets\":\"True\"}]"
+            Octopus.Action.KubernetesContainers.DeploymentLabels = "{\"component\":\"shoppingcart\"}"
+            Octopus.Action.KubernetesContainers.DeploymentName = "#{OctoPetShop.ShoppingCartApi.ServiceName}"
+            Octopus.Action.KubernetesContainers.DeploymentResourceType = "Deployment"
+            Octopus.Action.KubernetesContainers.DeploymentStyle = "RollingUpdate"
+            Octopus.Action.KubernetesContainers.DeploymentWait = "Wait"
+            Octopus.Action.KubernetesContainers.IngressAnnotations = "[]"
+            Octopus.Action.KubernetesContainers.Namespace = "#{OctoPetShop.Cluster.Namespace}"
+            Octopus.Action.KubernetesContainers.PodManagementPolicy = "OrderedReady"
+            Octopus.Action.KubernetesContainers.Replicas = "1"
+            Octopus.Action.KubernetesContainers.SecretName = "octopetshop-shoppingcart-secrets"
+            Octopus.Action.KubernetesContainers.SecretValues = "{\"ops-connectionstring\":\"#{OctoPetShop.Database.ConnectionString}\"}"
+            Octopus.Action.KubernetesContainers.ServiceName = "#{OctoPetShop.ShoppingCartApi.ServiceName}"
+            Octopus.Action.KubernetesContainers.ServiceNameType = "External"
+            Octopus.Action.KubernetesContainers.ServicePorts = "[{\"name\":\"http\",\"port\":\"#{OctoPetShop.ShoppingCart.HttpPort}\",\"targetPort\":\"#{OctoPetShop.ShoppingCart.HttpPort}\",\"nodePort\":\"\",\"protocol\":\"TCP\"},{\"name\":\"https\",\"port\":\"#{OctoPetShop.ShoppingCart.HttpsPort}\",\"targetPort\":\"#{OctoPetShop.ShoppingCart.HttpsPort}\",\"nodePort\":\"\",\"protocol\":\"TCP\"}]"
+            Octopus.Action.KubernetesContainers.ServiceType = "ClusterIP"
+            OctopusUseBundledTooling = "False"
+        }
+        worker_pool = "k8s-worker"
+
+        container {
+            feed = "docker-hub"
+            image = "octopusdeploy/worker-tools:ubuntu.18.04"
+        }
+
+        packages "shoppingcart-api" {
+            acquisition_location = "NotAcquired"
+            feed = "docker-hub"
+            package_id = "octopussamples/octopetshop-shoppingcartservice-enterprise"
+            properties = {
+                Extract = "False"
+                PackageParameterName = ""
+                SelectionMode = "immediate"
+            }
+        }
+    }
+}
+
+step "create-web-app-service" {
+    name = "Create Web App service"
+    properties = {
+        Octopus.Action.TargetRoles = "Enterprise-Demo"
+    }
+
+    action {
+        action_type = "Octopus.KubernetesDeployRawYaml"
+        notes = "Create a Load Balancer service for the web app on the target cluster."
+        properties = {
+            Octopus.Action.KubernetesContainers.CustomResourceYaml = <<-EOT
+                apiVersion: v1
+                kind: Service
+                metadata:
+                  name: '#{OctoPetShop.WebApp.ServiceName}'
+                  namespace: '#{OctoPetShop.Cluster.Namespace}'
+                spec:
+                  type: LoadBalancer
+                  ports:
+                    - name: http
+                      port: 80
+                      targetPort: #{OctoPetShop.WebApp.HttpPort}
+                      protocol: TCP
+                    - name: https
+                      port: 443
+                      targetPort: #{OctoPetShop.WebApp.HttpsPort}
+                      protocol: TCP
+                  selector:
+                    component: web
+                    type: main
+                
+                EOT
+            Octopus.Action.KubernetesContainers.Namespace = "#{OctoPetShop.Cluster.Namespace}"
+            Octopus.Action.Script.ScriptSource = "Inline"
+            OctopusUseBundledTooling = "False"
+        }
+        worker_pool = "k8s-worker"
+
+        container {
+            feed = "docker-hub"
+            image = "octopusdeploy/worker-tools:ubuntu.18.04"
+        }
+    }
+}
+
+step "deploy-database-migrations" {
+    name = "Deploy database migrations"
+    properties = {
+        Octopus.Action.TargetRoles = "Enterprise-Demo"
+    }
+
+    action {
+        action_type = "Octopus.KubernetesDeployContainers"
+        properties = {
+            Octopus.Action.EnabledFeatures = ",Octopus.Features.KubernetesService,Octopus.Features.KubernetesIngress,Octopus.Features.KubernetesConfigMap,Octopus.Features.KubernetesSecret"
+            Octopus.Action.KubernetesContainers.Containers = "[{\"Name\":\"dbup\",\"Ports\":[],\"EnvironmentVariables\":[{\"key\":\"DbUpConnectionString\",\"keyError\":null,\"value\":\"#{OctoPetShop.Database.ConnectionString}\",\"valueError\":null,\"option\":\"\",\"optionError\":null,\"option2\":\"\",\"option2Error\":null}],\"SecretEnvironmentVariables\":[],\"ConfigMapEnvironmentVariables\":[],\"FieldRefEnvironmentVariables\":[],\"ConfigMapEnvFromSource\":[],\"SecretEnvFromSource\":[],\"VolumeMounts\":[],\"Resources\":{\"requests\":{\"memory\":\"\",\"cpu\":\"\",\"ephemeralStorage\":\"\",\"amdGpu\":\"\",\"nvidiaGpu\":\"\",\"storage\":\"\"},\"limits\":{\"memory\":\"\",\"cpu\":\"\",\"ephemeralStorage\":\"\",\"amdGpu\":\"\",\"nvidiaGpu\":\"\",\"storage\":\"\"}},\"LivenessProbe\":{\"failureThreshold\":\"\",\"initialDelaySeconds\":\"\",\"periodSeconds\":\"\",\"successThreshold\":\"\",\"timeoutSeconds\":\"\",\"type\":\"\",\"exec\":{\"command\":[]},\"httpGet\":{\"host\":\"\",\"path\":\"\",\"port\":\"\",\"scheme\":\"\",\"httpHeaders\":[]},\"tcpSocket\":{\"host\":\"\",\"port\":\"\"}},\"ReadinessProbe\":{\"failureThreshold\":\"\",\"initialDelaySeconds\":\"\",\"periodSeconds\":\"\",\"successThreshold\":\"\",\"timeoutSeconds\":\"\",\"type\":\"\",\"exec\":{\"command\":[]},\"httpGet\":{\"host\":\"\",\"path\":\"\",\"port\":\"\",\"scheme\":\"\",\"httpHeaders\":[]},\"tcpSocket\":{\"host\":\"\",\"port\":\"\"}},\"StartupProbe\":{\"failureThreshold\":\"\",\"initialDelaySeconds\":\"\",\"periodSeconds\":\"\",\"successThreshold\":\"\",\"timeoutSeconds\":\"\",\"type\":\"\",\"exec\":{\"command\":[]},\"httpGet\":{\"host\":\"\",\"path\":\"\",\"port\":\"\",\"scheme\":\"\",\"httpHeaders\":[]},\"tcpSocket\":{\"host\":\"\",\"port\":\"\"}},\"Command\":[],\"Args\":[],\"SecurityContext\":{\"allowPrivilegeEscalation\":\"\",\"privileged\":\"\",\"readOnlyRootFilesystem\":\"\",\"runAsGroup\":\"\",\"runAsNonRoot\":\"\",\"runAsUser\":\"\",\"capabilities\":{\"add\":[],\"drop\":[]},\"seLinuxOptions\":{\"level\":\"\",\"role\":\"\",\"type\":\"\",\"user\":\"\"}},\"TerminationMessagePath\":\"\",\"TerminationMessagePolicy\":\"\",\"Lifecycle\":{\"PreStop\":null,\"PostStart\":null},\"CreateFeedSecrets\":\"True\"}]"
+            Octopus.Action.KubernetesContainers.DeploymentName = "octopetshop-dbup"
+            Octopus.Action.KubernetesContainers.DeploymentResourceType = "Job"
+            Octopus.Action.KubernetesContainers.DeploymentStyle = "RollingUpdate"
+            Octopus.Action.KubernetesContainers.DeploymentWait = "Wait"
+            Octopus.Action.KubernetesContainers.IngressAnnotations = "[]"
+            Octopus.Action.KubernetesContainers.Namespace = "#{OctoPetShop.Cluster.Namespace}"
+            Octopus.Action.KubernetesContainers.PodManagementPolicy = "OrderedReady"
+            Octopus.Action.KubernetesContainers.Replicas = "1"
+            Octopus.Action.KubernetesContainers.RestartPolicy = "Never"
+            Octopus.Action.KubernetesContainers.ServiceNameType = "External"
+            Octopus.Action.KubernetesContainers.ServiceType = "ClusterIP"
+            Octopus.Action.KubernetesContainers.TtlSecondsAfterFinished = "10"
+            OctopusUseBundledTooling = "False"
+        }
+        worker_pool = "k8s-worker"
+
+        container {
+            feed = "docker-hub"
+            image = "octopusdeploy/worker-tools:ubuntu.18.04"
+        }
+
+        packages "dbup" {
+            acquisition_location = "NotAcquired"
+            feed = "docker-hub"
+            package_id = "octopussamples/octopetshop-database-enterprise"
+            properties = {
+                Extract = "False"
+                PackageParameterName = ""
+                SelectionMode = "immediate"
+            }
+        }
+    }
+}
+
+step "deploy-web-app-containers" {
+    name = "Deploy Web App containers"
+    properties = {
+        Octopus.Action.TargetRoles = "Enterprise-Demo"
+    }
+
+    action {
+        action_type = "Octopus.KubernetesDeployContainers"
+        notes = "Deploy the web app containers to the target cluster."
+        properties = {
+            Octopus.Action.EnabledFeatures = ",Octopus.Features.KubernetesService,Octopus.Features.KubernetesIngress,Octopus.Features.KubernetesConfigMap,Octopus.Features.KubernetesSecret"
+            Octopus.Action.KubernetesContainers.CombinedVolumes = "[]"
+            Octopus.Action.KubernetesContainers.Containers = "[{\"Name\":\"web-app\",\"Ports\":[],\"EnvironmentVariables\":[{\"key\":\"ASPNETCORE_URLS\",\"value\":\"http://+:#{OctoPetShop.WebApp.HttpPort}\",\"keyError\":null},{\"key\":\"ProductServiceBaseUrl\",\"value\":\"#{OctoPetShop.ProductApi.Url}\",\"keyError\":null},{\"key\":\"ShoppingCartServiceBaseUrl\",\"value\":\"#{OctoPetShop.ShoppingCartApi.Url}\",\"keyError\":null},{\"key\":\"AppVersion\",\"value\":\"#{Octopus.Release.Number}\",\"keyError\":null},{\"key\":\"EnvironmentName\",\"value\":\"#{Octopus.Environment.Name}\",\"keyError\":null},{\"key\":\"ASPNETCORE_ENVIRONMENT\",\"value\":\"#{Octopus.Environment.Name}\",\"keyError\":null}],\"SecretEnvironmentVariables\":[],\"ConfigMapEnvironmentVariables\":[],\"FieldRefEnvironmentVariables\":[],\"ConfigMapEnvFromSource\":[],\"SecretEnvFromSource\":[],\"VolumeMounts\":[],\"Resources\":{\"requests\":{\"memory\":\"#{OctoPetShop.WebApp.Container.MemoryRequest}\",\"cpu\":\"\",\"ephemeralStorage\":\"\"},\"limits\":{\"memory\":\"#{OctoPetShop.WebApp.Container.MemoryLimit}\",\"cpu\":\"\",\"ephemeralStorage\":\"\",\"nvidiaGpu\":\"\",\"amdGpu\":\"\"}},\"LivenessProbe\":{\"failureThreshold\":\"\",\"initialDelaySeconds\":\"\",\"periodSeconds\":\"\",\"successThreshold\":\"\",\"timeoutSeconds\":\"\",\"type\":null,\"exec\":{\"command\":[]},\"httpGet\":{\"host\":\"\",\"path\":\"\",\"port\":\"\",\"scheme\":\"\",\"httpHeaders\":[]},\"tcpSocket\":{\"host\":\"\",\"port\":\"\"}},\"ReadinessProbe\":{\"failureThreshold\":\"\",\"initialDelaySeconds\":\"\",\"periodSeconds\":\"\",\"successThreshold\":\"\",\"timeoutSeconds\":\"\",\"type\":null,\"exec\":{\"command\":[]},\"httpGet\":{\"host\":\"\",\"path\":\"\",\"port\":\"\",\"scheme\":\"\",\"httpHeaders\":[]},\"tcpSocket\":{\"host\":\"\",\"port\":\"\"}},\"StartupProbe\":{\"failureThreshold\":\"\",\"initialDelaySeconds\":\"\",\"periodSeconds\":\"\",\"successThreshold\":\"\",\"timeoutSeconds\":\"\",\"type\":null,\"exec\":{\"command\":[]},\"httpGet\":{\"host\":\"\",\"path\":\"\",\"port\":\"\",\"scheme\":\"\",\"httpHeaders\":[]},\"tcpSocket\":{\"host\":\"\",\"port\":\"\"}},\"Command\":[],\"Args\":[],\"InitContainer\":\"False\",\"SecurityContext\":{\"allowPrivilegeEscalation\":\"\",\"privileged\":\"\",\"readOnlyRootFilesystem\":\"\",\"runAsGroup\":\"\",\"runAsNonRoot\":\"\",\"runAsUser\":\"\",\"capabilities\":{\"add\":[],\"drop\":[]},\"seLinuxOptions\":{\"level\":\"\",\"role\":\"\",\"type\":\"\",\"user\":\"\"}},\"Lifecycle\":{},\"CreateFeedSecrets\":\"True\"}]"
+            Octopus.Action.KubernetesContainers.DeploymentAnnotations = "[{\"key\":\"kubernetes.io/change-cause\",\"value\":\"#{Octopus.Release.Number}\"}]"
+            Octopus.Action.KubernetesContainers.DeploymentLabels = "{\"component\":\"web\",\"type\":\"main\"}"
+            Octopus.Action.KubernetesContainers.DeploymentName = "#{OctoPetShop.WebApp.ServiceName}"
+            Octopus.Action.KubernetesContainers.DeploymentResourceType = "Deployment"
+            Octopus.Action.KubernetesContainers.DeploymentStyle = "RollingUpdate"
+            Octopus.Action.KubernetesContainers.DeploymentWait = "Wait"
+            Octopus.Action.KubernetesContainers.DnsConfigOptions = "[]"
+            Octopus.Action.KubernetesContainers.IngressAnnotations = "[]"
+            Octopus.Action.KubernetesContainers.LoadBalancerAnnotations = "[]"
+            Octopus.Action.KubernetesContainers.Namespace = "#{OctoPetShop.Cluster.Namespace}"
+            Octopus.Action.KubernetesContainers.NodeAffinity = "[]"
+            Octopus.Action.KubernetesContainers.PersistentVolumeClaims = "[]"
+            Octopus.Action.KubernetesContainers.PodAffinity = "[]"
+            Octopus.Action.KubernetesContainers.PodAnnotations = "[]"
+            Octopus.Action.KubernetesContainers.PodAntiAffinity = "[]"
+            Octopus.Action.KubernetesContainers.PodManagementPolicy = "OrderedReady"
+            Octopus.Action.KubernetesContainers.PodSecuritySysctls = "[]"
+            Octopus.Action.KubernetesContainers.Replicas = "1"
+            Octopus.Action.KubernetesContainers.SecretName = "octopetshop-shoppingcart-secrets"
+            Octopus.Action.KubernetesContainers.SecretValues = "{\"ops-connectionstring\":\"#{OctoPetShop.Database.ConnectionString}\"}"
+            Octopus.Action.KubernetesContainers.ServiceNameType = "External"
+            Octopus.Action.KubernetesContainers.ServicePorts = "[]"
+            Octopus.Action.KubernetesContainers.ServiceType = "ClusterIP"
+            Octopus.Action.KubernetesContainers.Tolerations = "[]"
+            OctopusUseBundledTooling = "False"
+        }
+        worker_pool = "k8s-worker"
+
+        container {
+            feed = "docker-hub"
+            image = "octopusdeploy/worker-tools:ubuntu.18.04"
+        }
+
+        packages "web-app" {
+            acquisition_location = "NotAcquired"
+            feed = "docker-hub"
+            package_id = "octopussamples/octopetshop-web-enterprise"
+        }
+    }
+}
+
+step "smoke-test-product-api-endpoint" {
+    name = "Smoke test API endpoints"
+
+    action {
+        properties = {
+            Octopus.Action.Template.Id = "ActionTemplates-1602"
+            Octopus.Action.Template.Version = "6"
+            smoketest.baseURI = ""
+        }
+        worker_pool = "azure-worker-pool"
+    }
+}
+
+step "send-completion-notification" {
+    condition = "Variable"
+    name = "Send Completion Notification"
+    properties = {
+        Octopus.Step.ConditionVariableExpression = "#{unless Octopus.Deployment.Trigger.Id}True#{/unless}"
+    }
+
+    action {
+        action_type = "Octopus.Email"
+        environments = ["production"]
+        notes = "Email the deployer that the deployment has been completed."
+        properties = {
+            Octopus.Action.Email.Body = "#{Octopus.Release.Notes}"
+            Octopus.Action.Email.IsHtml = "True"
+            Octopus.Action.Email.Subject = "Release #{Octopus.Release.Number} has been deployed to #{Octopus.Environment.Name}"
+            Octopus.Action.Email.To = "#{Octopus.Deployment.CreatedBy.EmailAddress}"
+        }
+    }
+}
+
+step "display-link" {
+    name = "Display link"
+    properties = {
+        Octopus.Action.TargetRoles = "Enterprise-Demo"
+    }
+
+    action {
+        action_type = "Octopus.KubernetesRunScript"
+        properties = {
+            Octopus.Action.Script.ScriptBody = <<-EOT
+                # Get variables
+                $namespace = $OctopusParameters["OctoPetShop.Cluster.Namespace"]
+                $serviceName = $OctopusParameters["OctoPetShop.WebApp.ServiceName"]
+                $servicePort = $OctopusParameters["OctoPetShop.WebApp.HttpPort"]
+                
+                # Get load balancer information
+                $loadBalancer = (kubectl get services $serviceName --namespace $namespace -o json | ConvertFrom-Json)
+                
+                Write-Highlight "[OctoPetShop](http://$($loadBalancer.status.loadbalancer.ingress.ip))"
+                EOT
+            Octopus.Action.Script.ScriptSource = "Inline"
+            Octopus.Action.Script.Syntax = "PowerShell"
+            OctopusUseBundledTooling = "False"
+        }
+        worker_pool = "k8s-worker"
+
+        container {
+            feed = "docker-hub"
+            image = "octopusdeploy/worker-tools:ubuntu.18.04"
+        }
+    }
+}
