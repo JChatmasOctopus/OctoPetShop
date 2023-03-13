@@ -302,9 +302,7 @@ step "deploy-web-app-containers" {
     }
 }
 
-/*
-test
-*/
+#test
 
 step "send-completion-notification" {
     condition = "Variable"
