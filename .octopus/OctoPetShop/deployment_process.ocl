@@ -302,17 +302,6 @@ step "deploy-web-app-containers" {
     }
 }
 
-step "smoke-test-product-api-endpoint" {
-    name = "Smoke test API endpoints"
-    action {
-        properties = {
-            Octopus.Action.Template.Id = "ActionTemplates-1602"
-            Octopus.Action.Template.Version = "3"
-        }
-        worker_pool = "azure-worker-pool"
-    }
-}
-
 step "send-completion-notification" {
     condition = "Variable"
     name = "Send Completion Notification"
