@@ -181,7 +181,7 @@ variable "Octopus.Azure.Account" {
     }
 }
 
-variable "Octopus.ServiceNow.ChangeRequest.Number" {
+variable "Octopus.JiraServiceManagement.ChangeRequest.Number" {
     value {
         description = "ServiceNow change request"
         environment = ["production"]
