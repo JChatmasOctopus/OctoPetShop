@@ -355,3 +355,20 @@ step "display-link" {
         }
     }
 }
+
+step "smoke-test-api-endpoints" {
+    name = "Smoke test API endpoints"
+    properties = {
+        Octopus.Action.TargetRoles = "octofx-web-4"
+    }
+
+    action {
+        properties = {
+            Octopus.Action.RunOnServer = "false"
+            Octopus.Action.Template.Id = "ActionTemplates-1602"
+            Octopus.Action.Template.Version = "6"
+            smoketest.baseURI = "https://octopetshop.com"
+        }
+        worker_pool_variable = ""
+    }
+}
