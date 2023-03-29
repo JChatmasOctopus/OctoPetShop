@@ -30,6 +30,7 @@ namespace OctopusSamples.OctoPetShop
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<AppSettings>(Configuration);
             services.AddScoped<IProductClient, ProductClient>();
+            //services.AddScoped<IProductClient, ProductClient>();
 
             services.AddMvcCore(options =>
             {
