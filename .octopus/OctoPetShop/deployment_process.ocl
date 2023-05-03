@@ -1,7 +1,7 @@
 step "notify-deployment-starting" {
     name = "Notify Production Deployment Starting"
 
-    action {
+    action "notify-deployment-starting-1" {
         environments = ["production"]
         properties = {
             Octopus.Action.Template.Id = "ActionTemplates-1021"
