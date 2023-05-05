@@ -20,14 +20,6 @@ variable "OctoPetShop.CleanedEnvironmentName" {
     }
 }
 
-variable "OctoPetShop.CleanedSpaceName" {
-    value "#{Octopus.Space.Name | Replace \"[^a-zA-Z]+\" \"-\" | ToLower}" {}
-}
-
-variable "OctoPetShop.Cluster.Namespace" {
-    value "#{OctoPetShop.CleanedEnvironmentName}" {}
-}
-
 variable "OctoPetShop.Container.MemoryLimit" {
     value "500Mi" {}
 }
@@ -193,4 +185,12 @@ variable "Octopus.Azure.Account" {
     value "octopetshop-azure-subscription" {
         action = ["deploy-sqlserver-container"]
     }
+}
+
+variable "OctoPetShop.CleanedSpaceName" {
+    value "jchat-#{Octopus.Space.Name | Replace \"[^a-zA-Z]+\" \"-\" | ToLower}" {}
+}
+
+variable "OctoPetShop.Cluster.Namespace" {
+    value "jchat-#{OctoPetShop.CleanedEnvironmentName}" {}
 }
