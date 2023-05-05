@@ -188,9 +188,9 @@ variable "Octopus.Azure.Account" {
 }
 
 variable "OctoPetShop.CleanedSpaceName" {
-    value "jchat-#{Octopus.Space.Name | Replace \"[^a-zA-Z]+\" \"-\" | ToLower}" {}
+    value "#{Octopus.Space.Name | Replace \"[^a-zA-Z]+\" \"-\" | ToLower}" {}
 }
 
 variable "OctoPetShop.Cluster.Namespace" {
-    value "jchat-#{OctoPetShop.CleanedEnvironmentName}" {}
+    value "#{OctoPetShop.CleanedSpaceName}-#{OctoPetShop.CleanedEnvironmentName}" {}
 }
