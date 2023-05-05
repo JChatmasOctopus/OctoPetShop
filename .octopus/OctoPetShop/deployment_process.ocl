@@ -14,7 +14,7 @@ step "notify-deployment-starting" {
 step "deploy-sqlserver-container" {
     name = "Deploy SqlServer container"
     properties = {
-        Octopus.Action.TargetRoles = "Enterprise-Demo"
+        Octopus.Action.TargetRoles = "demo-k8s-cluster"
     }
 
     action {
@@ -55,7 +55,7 @@ step "deploy-sqlserver-container" {
 step "deploy-product-api-container" {
     name = "Deploy Product API container"
     properties = {
-        Octopus.Action.TargetRoles = "Enterprise-Demo"
+        Octopus.Action.TargetRoles = "demo-k8s-cluster"
     }
 
     action {
@@ -98,7 +98,7 @@ step "deploy-product-api-container" {
 step "deploy-shopping-cart-containers" {
     name = "Deploy Shopping Cart containers"
     properties = {
-        Octopus.Action.TargetRoles = "Enterprise-Demo"
+        Octopus.Action.TargetRoles = "demo-k8s-cluster"
     }
 
     action {
@@ -141,7 +141,7 @@ step "deploy-shopping-cart-containers" {
 step "create-web-app-service" {
     name = "Create Web App service"
     properties = {
-        Octopus.Action.TargetRoles = "Enterprise-Demo"
+        Octopus.Action.TargetRoles = "demo-k8s-cluster"
     }
 
     action {
@@ -181,7 +181,7 @@ step "create-web-app-service" {
 step "deploy-database-migrations" {
     name = "Deploy database migrations"
     properties = {
-        Octopus.Action.TargetRoles = "Enterprise-Demo"
+        Octopus.Action.TargetRoles = "demo-k8s-cluster"
     }
 
     action {
@@ -221,7 +221,7 @@ step "deploy-database-migrations" {
 step "deploy-web-app-containers" {
     name = "Deploy Web App containers"
     properties = {
-        Octopus.Action.TargetRoles = "Enterprise-Demo"
+        Octopus.Action.TargetRoles = "demo-k8s-cluster"
     }
 
     action {
@@ -291,7 +291,7 @@ step "send-completion-notification" {
 step "display-link" {
     name = "Display link"
     properties = {
-        Octopus.Action.TargetRoles = "Enterprise-Demo"
+        Octopus.Action.TargetRoles = "demo-k8s-cluster"
     }
 
     action {
