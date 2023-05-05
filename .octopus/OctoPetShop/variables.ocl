@@ -172,15 +172,6 @@ variable "OctoPetShop.WorkerPool" {
     value "azure-worker-pool" {}
 }
 
-variable "Octopus.Azure.Account" {
-    type = "AzureAccount"
-
-    value "octopetshop-azure-subscription" {
-        action = ["deploy-sqlserver-container"]
-        environment = ["test"]
-    }
-}
-
 variable "Octopus.ServiceNow.ChangeRequest.Number" {
     value {
         description = "ServiceNow change request"
@@ -193,5 +184,13 @@ variable "Octopus.ServiceNow.ChangeRequest.Number" {
             }
             label = "ServiceNow change request"
         }
+    }
+}
+
+variable "Octopus.Azure.Account" {
+    type = "AzureAccount"
+
+    value "octopetshop-azure-subscription" {
+        action = ["deploy-sqlserver-container"]
     }
 }
