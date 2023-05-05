@@ -46,7 +46,7 @@ step "deploy-sqlserver-container" {
 
         container {
             feed = "docker-hub"
-            image = "octopusdeploy/worker-tools:ubuntu.18.04"
+            image = "octopusdeploy/worker-tools:windows.ltsc2019"
         }
 
         packages "sqlserver" {
@@ -94,7 +94,7 @@ step "deploy-product-api-container" {
 
         container {
             feed = "docker-hub"
-            image = "octopusdeploy/worker-tools:ubuntu.18.04"
+            image = "octopusdeploy/worker-tools:windows.ltsc2019"
         }
 
         packages "product-api" {
@@ -142,7 +142,7 @@ step "deploy-shopping-cart-containers" {
 
         container {
             feed = "docker-hub"
-            image = "octopusdeploy/worker-tools:ubuntu.18.04"
+            image = "octopusdeploy/worker-tools:windows.ltsc2019"
         }
 
         packages "shoppingcart-api" {
@@ -198,7 +198,7 @@ step "create-web-app-service" {
 
         container {
             feed = "docker-hub"
-            image = "octopusdeploy/worker-tools:ubuntu.18.04"
+            image = "octopusdeploy/worker-tools:windows.ltsc2019"
         }
     }
 }
@@ -232,7 +232,7 @@ step "deploy-database-migrations" {
 
         container {
             feed = "docker-hub"
-            image = "octopusdeploy/worker-tools:ubuntu.18.04"
+            image = "octopusdeploy/worker-tools:windows.ltsc2019"
         }
 
         packages "dbup" {
@@ -291,7 +291,7 @@ step "deploy-web-app-containers" {
 
         container {
             feed = "docker-hub"
-            image = "octopusdeploy/worker-tools:ubuntu.18.04"
+            image = "octopusdeploy/worker-tools:windows.ltsc2019"
         }
 
         packages "web-app" {
@@ -351,7 +351,7 @@ step "display-link" {
 
         container {
             feed = "docker-hub"
-            image = "octopusdeploy/worker-tools:ubuntu.18.04"
+            image = "octopusdeploy/worker-tools:windows.ltsc2019"
         }
     }
 }
