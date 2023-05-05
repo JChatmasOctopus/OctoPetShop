@@ -7,7 +7,7 @@ step "notify-deployment-starting" {
             Octopus.Action.Template.Id = "ActionTemplates-1021"
             Octopus.Action.Template.Version = "4"
         }
-        worker_pool = "k8s-worker"
+        worker_pool = "azure-worker-pool"
 
         container {
             feed = "docker-hub"
@@ -42,7 +42,7 @@ step "deploy-sqlserver-container" {
             Octopus.Action.KubernetesContainers.ServiceType = "ClusterIP"
             OctopusUseBundledTooling = "False"
         }
-        worker_pool = "k8s-worker"
+        worker_pool = "azure-worker-pool"
 
         container {
             feed = "docker-hub"
@@ -90,7 +90,7 @@ step "deploy-product-api-container" {
             Octopus.Action.KubernetesContainers.ServiceType = "ClusterIP"
             OctopusUseBundledTooling = "False"
         }
-        worker_pool = "k8s-worker"
+        worker_pool = "azure-worker-pool"
 
         container {
             feed = "docker-hub"
@@ -138,7 +138,7 @@ step "deploy-shopping-cart-containers" {
             Octopus.Action.KubernetesContainers.ServiceType = "ClusterIP"
             OctopusUseBundledTooling = "False"
         }
-        worker_pool = "k8s-worker"
+        worker_pool = "azure-worker-pool"
 
         container {
             feed = "docker-hub"
@@ -194,7 +194,7 @@ step "create-web-app-service" {
             Octopus.Action.Script.ScriptSource = "Inline"
             OctopusUseBundledTooling = "False"
         }
-        worker_pool = "k8s-worker"
+        worker_pool = "azure-worker-pool"
 
         container {
             feed = "docker-hub"
@@ -228,7 +228,7 @@ step "deploy-database-migrations" {
             Octopus.Action.KubernetesContainers.TtlSecondsAfterFinished = "10"
             OctopusUseBundledTooling = "False"
         }
-        worker_pool = "k8s-worker"
+        worker_pool = "azure-worker-pool"
 
         container {
             feed = "docker-hub"
@@ -287,7 +287,7 @@ step "deploy-web-app-containers" {
             Octopus.Action.KubernetesContainers.Tolerations = "[]"
             OctopusUseBundledTooling = "False"
         }
-        worker_pool = "k8s-worker"
+        worker_pool = "azure-worker-pool"
 
         container {
             feed = "docker-hub"
@@ -347,7 +347,7 @@ step "display-link" {
             Octopus.Action.Script.Syntax = "PowerShell"
             OctopusUseBundledTooling = "False"
         }
-        worker_pool = "k8s-worker"
+        worker_pool = "azure-worker-pool"
 
         container {
             feed = "docker-hub"
@@ -359,7 +359,7 @@ step "display-link" {
 step "smoke-test-api-endpoints" {
     name = "Smoke test API endpoints"
     properties = {
-        Octopus.Action.TargetRoles = "octofx-web-4"
+        Octopus.Action.TargetRoles = "octofx-web"
     }
 
     action {
