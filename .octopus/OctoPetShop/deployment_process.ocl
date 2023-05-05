@@ -11,7 +11,7 @@ step "notify-deployment-starting" {
 
         container {
             feed = "docker-hub"
-            image = "octopusdeploy/worker-tools:ubuntu.18.04"
+            image = "octopusdeploy/worker-tools:windows.ltsc2019"
         }
     }
 }
