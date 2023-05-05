@@ -318,17 +318,13 @@ step "display-link" {
 
 step "smoke-test-api-endpoints" {
     name = "Smoke test API endpoints"
-    properties = {
-        Octopus.Action.TargetRoles = "octofx-web"
-    }
 
     action {
         properties = {
-            Octopus.Action.RunOnServer = "false"
             Octopus.Action.Template.Id = "ActionTemplates-1602"
             Octopus.Action.Template.Version = "6"
             smoketest.baseURI = "https://octopetshop.com"
         }
-        worker_pool_variable = ""
+        worker_pool = "azure-worker-pool"
     }
 }
