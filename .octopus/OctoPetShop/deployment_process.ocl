@@ -8,11 +8,6 @@ step "notify-deployment-starting" {
             Octopus.Action.Template.Version = "4"
         }
         worker_pool = "azure-worker-pool"
-
-        container {
-            feed = "docker-hub"
-            image = "octopusdeploy/worker-tools:windows.ltsc2019"
-        }
     }
 }
 
@@ -43,11 +38,6 @@ step "deploy-sqlserver-container" {
             OctopusUseBundledTooling = "False"
         }
         worker_pool = "azure-worker-pool"
-
-        container {
-            feed = "docker-hub"
-            image = "octopusdeploy/worker-tools:windows.ltsc2019"
-        }
 
         packages "sqlserver" {
             acquisition_location = "NotAcquired"
@@ -92,11 +82,6 @@ step "deploy-product-api-container" {
         }
         worker_pool = "azure-worker-pool"
 
-        container {
-            feed = "docker-hub"
-            image = "octopusdeploy/worker-tools:windows.ltsc2019"
-        }
-
         packages "product-api" {
             acquisition_location = "NotAcquired"
             feed = "docker-hub"
@@ -139,11 +124,6 @@ step "deploy-shopping-cart-containers" {
             OctopusUseBundledTooling = "False"
         }
         worker_pool = "azure-worker-pool"
-
-        container {
-            feed = "docker-hub"
-            image = "octopusdeploy/worker-tools:windows.ltsc2019"
-        }
 
         packages "shoppingcart-api" {
             acquisition_location = "NotAcquired"
@@ -195,11 +175,6 @@ step "create-web-app-service" {
             OctopusUseBundledTooling = "False"
         }
         worker_pool = "azure-worker-pool"
-
-        container {
-            feed = "docker-hub"
-            image = "octopusdeploy/worker-tools:windows.ltsc2019"
-        }
     }
 }
 
@@ -229,11 +204,6 @@ step "deploy-database-migrations" {
             OctopusUseBundledTooling = "False"
         }
         worker_pool = "azure-worker-pool"
-
-        container {
-            feed = "docker-hub"
-            image = "octopusdeploy/worker-tools:windows.ltsc2019"
-        }
 
         packages "dbup" {
             acquisition_location = "NotAcquired"
@@ -289,11 +259,6 @@ step "deploy-web-app-containers" {
         }
         worker_pool = "azure-worker-pool"
 
-        container {
-            feed = "docker-hub"
-            image = "octopusdeploy/worker-tools:windows.ltsc2019"
-        }
-
         packages "web-app" {
             acquisition_location = "NotAcquired"
             feed = "docker-hub"
@@ -348,11 +313,6 @@ step "display-link" {
             OctopusUseBundledTooling = "False"
         }
         worker_pool = "azure-worker-pool"
-
-        container {
-            feed = "docker-hub"
-            image = "octopusdeploy/worker-tools:windows.ltsc2019"
-        }
     }
 }
 
