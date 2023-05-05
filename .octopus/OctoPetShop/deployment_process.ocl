@@ -37,7 +37,7 @@ step "deploy-sqlserver-container" {
             Octopus.Action.KubernetesContainers.ServiceType = "ClusterIP"
             OctopusUseBundledTooling = "False"
         }
-        worker_pool = "azure-worker-pool"
+        worker_pool = "aws-worker-pool"
 
         packages "sqlserver" {
             acquisition_location = "NotAcquired"
@@ -80,7 +80,7 @@ step "deploy-product-api-container" {
             Octopus.Action.KubernetesContainers.ServiceType = "ClusterIP"
             OctopusUseBundledTooling = "False"
         }
-        worker_pool = "azure-worker-pool"
+        worker_pool = "aws-worker-pool"
 
         packages "product-api" {
             acquisition_location = "NotAcquired"
@@ -123,7 +123,7 @@ step "deploy-shopping-cart-containers" {
             Octopus.Action.KubernetesContainers.ServiceType = "ClusterIP"
             OctopusUseBundledTooling = "False"
         }
-        worker_pool = "azure-worker-pool"
+        worker_pool = "aws-worker-pool"
 
         packages "shoppingcart-api" {
             acquisition_location = "NotAcquired"
@@ -174,7 +174,7 @@ step "create-web-app-service" {
             Octopus.Action.Script.ScriptSource = "Inline"
             OctopusUseBundledTooling = "False"
         }
-        worker_pool = "azure-worker-pool"
+        worker_pool = "aws-worker-pool"
     }
 }
 
@@ -203,7 +203,7 @@ step "deploy-database-migrations" {
             Octopus.Action.KubernetesContainers.TtlSecondsAfterFinished = "10"
             OctopusUseBundledTooling = "False"
         }
-        worker_pool = "azure-worker-pool"
+        worker_pool = "aws-worker-pool"
 
         packages "dbup" {
             acquisition_location = "NotAcquired"
@@ -257,7 +257,7 @@ step "deploy-web-app-containers" {
             Octopus.Action.KubernetesContainers.Tolerations = "[]"
             OctopusUseBundledTooling = "False"
         }
-        worker_pool = "azure-worker-pool"
+        worker_pool = "aws-worker-pool"
 
         packages "web-app" {
             acquisition_location = "NotAcquired"
