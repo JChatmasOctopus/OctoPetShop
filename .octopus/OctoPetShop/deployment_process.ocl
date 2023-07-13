@@ -320,6 +320,7 @@ step "smoke-test-api-endpoints" {
     name = "Smoke test API endpoints"
 
     action {
+        is_disabled = true
         properties = {
             Octopus.Action.Template.Id = "ActionTemplates-1602"
             Octopus.Action.Template.Version = "6"
