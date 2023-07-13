@@ -113,12 +113,12 @@ variable "OctoPetShop.ShoppingCart.Identity.URL" {
         environment = ["production"]
     }
 
-    value "https://dev.identity.octopetshop.com/" {
-        environment = ["development"]
-    }
-
     value "https://test.identity.octopetshop.com/" {
         environment = ["test"]
+    }
+
+    value "https://development.identity.octopetshop.com/" {
+        environment = ["development"]
     }
 }
 
