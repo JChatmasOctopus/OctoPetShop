@@ -1,3 +1,4 @@
+default_guided_failure_mode = "Off"
 release_notes_template = <<-EOT
         #{each workItem in Octopus.Release.WorkItems}#{if Octopus.Template.Each.First == "True"}WorkItems:#{/if}
         - [#{workItem.Id}](#{workItem.LinkUrl}) - #{workItem.Description}
