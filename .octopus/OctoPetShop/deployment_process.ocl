@@ -303,6 +303,10 @@ step "display-link" {
                 $serviceName = $OctopusParameters["OctoPetShop.WebApp.ServiceName"]
                 $servicePort = $OctopusParameters["OctoPetShop.WebApp.HttpPort"]
                 
+                
+                
+                fdssdaf
+                
                 # Get load balancer information
                 $loadBalancer = (kubectl get services $serviceName --namespace $namespace -o json | ConvertFrom-Json)
                 
